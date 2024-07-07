@@ -12,8 +12,9 @@ interface AppState {
   pokemons: IPokemon[]
   throwError: boolean
 }
+interface AppProps {}
 
-class App extends Component<AppState> {
+class App extends Component<AppProps, AppState> {
   state: AppState = {
     searchTerm: '',
     pokemons: [],

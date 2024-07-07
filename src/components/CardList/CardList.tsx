@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import './style.css'
 import { IPokemon } from '../../utils/interfaces'
 import Card from '../Card/Card'
