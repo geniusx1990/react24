@@ -1,11 +1,11 @@
 import {
   IPokemon,
-  Pokemon,
-  PokemonApiResponse,
   PokemonType,
+  PokemonApiResponse,
+  Pokemon,
 } from './interfaces'
 
-export const APIRoute = {
+const APIRoute = {
   route: 'https://pokeapi.co/api/v2/pokemon',
   list: 'limit=100&offset=0',
 }
@@ -27,7 +27,6 @@ export const getPokemon = async (id: number | string): Promise<IPokemon> => {
   }
 
   const pokemon: PokemonApiResponse = await response.json()
-
   const pokemonType: string = pokemon.types
     .map((poke: PokemonType) => poke.type.name)
     .join(', ')
@@ -40,4 +39,24 @@ export const getPokemon = async (id: number | string): Promise<IPokemon> => {
   }
 
   return transformedPokemon
+}
+
+export const fetchAllPokemons = async (): Promise<IPokemon[]> => {
+  const pokemonList = await getListPokemons()
+  const pokemons: IPokemon[] = await Promise.all(
+    pokemonList.map(async (pokemon) => {
+      const response = await fetch(pokemon.url)
+      const data = await response.json()
+      const pokemonType = data.types
+        .map((type: PokemonType) => type.type.name)
+        .join(', ')
+      return {
+        id: data.id,
+        name: data.name,
+        image: data.sprites.front_default,
+        type: pokemonType,
+      }
+    })
+  )
+  return pokemons
 }

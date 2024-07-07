@@ -13,7 +13,7 @@ class Section_one extends Component<SectionOneProps> {
     const { searchTerm, onSearch, onInputChange } = this.props
 
     return (
-      <div className="red">
+      <div className="section-one">
         <Search
           searchTerm={searchTerm}
           onSearch={onSearch}
