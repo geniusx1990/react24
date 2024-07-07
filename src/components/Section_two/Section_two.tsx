@@ -1,9 +1,19 @@
 import { Component } from 'react'
 import './style.css'
+import { IPokemon } from '../../utils/interfaces'
+import CardList from '../CardList/CardList'
 
-class Section_two extends Component {
+interface SectionTwoProps {
+  pokemons: IPokemon[]
+}
+
+class Section_two extends Component<SectionTwoProps> {
   render() {
-    return <div className="yellow">'HI CLASS component'</div>
+    return (
+      <div className="yellow">
+        <CardList pokemons={this.props.pokemons} />
+      </div>
+    )
   }
 }
 

@@ -1,7 +1,13 @@
 import { Component, ReactNode } from 'react'
 import './style.css'
 
-class Search extends Component {
+interface SearchProps {
+  searchTerm: string
+  onSearch: (searchTerm: string) => void
+  onInputChange: (searchTerm: string) => void
+}
+
+class Search extends Component<SearchProps> {
   state = {
     searchTerm: '',
   }
@@ -11,15 +17,20 @@ class Search extends Component {
 
     if (savedSearchTerm) {
       this.setState({ searchTerm: savedSearchTerm })
+      this.props.onInputChange(savedSearchTerm)
     }
   }
 
   handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchTerm: event.target.value })
+    const searchTerm = event.target.value
+    this.setState({ searchTerm })
+    this.props.onInputChange(searchTerm)
   }
 
   handleSearch = () => {
-    localStorage.setItem('savedSearchTerm', this.state.searchTerm)
+    const { searchTerm } = this.state
+    localStorage.setItem('savedSearchTerm', searchTerm)
+    this.props.onSearch(searchTerm)
   }
 
   render(): ReactNode {

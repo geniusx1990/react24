@@ -1,0 +1,20 @@
+.card {
+  background-color: green;
+  border: 1px solid red;
+  border-radius: 2px;
+}
+
+.card-image img {
+  width: 100%;
+  height: auto;
+}
+
+.card-name {
+  font-size: 1.2em;
+  margin: 0;
+}
+
+.card-type,
+.card-id {
+  font-size: 0.9em;
+}
