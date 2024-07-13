@@ -1,4 +1,4 @@
-import { Component, ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import Section_one from './components/Section_one/Section_one'
 import Section_two from './components/Section_two/Section_two'
@@ -7,86 +7,72 @@ import { getPokemon, fetchAllPokemons } from './utils/API'
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
 import Fallback from './components/Fallback/Fallback'
 
-interface AppState {
-  searchTerm: string
-  pokemons: IPokemon[]
-  throwError: boolean
-}
-interface AppProps {}
+export default function App() {
+  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [pokemons, setPokemons] = useState<IPokemon[]>([])
+  const [throwError, setThrowError] = useState<boolean>(false)
 
-class App extends Component<AppProps, AppState> {
-  state: AppState = {
-    searchTerm: '',
-    pokemons: [],
-    throwError: false,
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     const savedSearchTerm = localStorage.getItem('savedSearchTerm')
     if (savedSearchTerm) {
-      this.loadPokemon(savedSearchTerm)
+      loadPokemon(savedSearchTerm)
     } else {
-      this.loadAllPokemons()
+      loadAllPokemons()
     }
+  }, [])
+
+  const handleInputChange = (searchTerm: string) => {
+    setSearchTerm(searchTerm)
   }
 
-  handleInputChange = (searchTerm: string) => {
-    this.setState({ searchTerm })
-  }
-
-  handleSearch = async () => {
-    const { searchTerm } = this.state
+  const handleSearch = async () => {
     if (searchTerm.trim() === '') {
-      this.loadAllPokemons()
+      loadAllPokemons()
     } else {
-      this.loadPokemon(searchTerm)
+      loadPokemon(searchTerm)
     }
   }
 
-  loadPokemon = async (searchTerm: string) => {
+  const loadPokemon = async (searchTerm: string) => {
     try {
       const searchResult = await getPokemon(searchTerm)
-      this.setState({ pokemons: [searchResult], throwError: false })
+      setPokemons([searchResult])
+      setThrowError(false)
       localStorage.setItem('savedSearchTerm', searchTerm)
     } catch (error) {
       console.error('Failed to fetch the Pokemon:', error)
-      this.setState({ pokemons: [], throwError: true })
+      setPokemons([])
+      setThrowError(true)
     }
   }
 
-  loadAllPokemons = async () => {
+  const loadAllPokemons = async () => {
     try {
       const pokemons = await fetchAllPokemons()
-      this.setState({ pokemons, throwError: false })
+      setPokemons(pokemons)
+      setThrowError(false)
       localStorage.removeItem('savedSearchTerm')
     } catch (error) {
       console.error('Failed to fetch the Pokemon list:', error)
-      this.setState({ throwError: true })
+      setThrowError(true)
     }
   }
 
-  handleClick = () => {
-    this.setState({ throwError: true })
+  const handleClick = () => {
+    setThrowError(true)
   }
 
-  render(): ReactNode {
-    return (
-      <ErrorBoundary fallback={<Fallback />}>
-        <div className="container">
-          <button onClick={this.handleClick}>Throw Error</button>
-          <Section_one
-            searchTerm={this.state.searchTerm}
-            onInputChange={this.handleInputChange}
-            onSearch={this.handleSearch}
-          />
-          <Section_two
-            pokemons={this.state.pokemons}
-            error={this.state.throwError}
-          />
-        </div>
-      </ErrorBoundary>
-    )
-  }
+  return (
+    <ErrorBoundary fallback={<Fallback />}>
+      <div className="container">
+        <button onClick={handleClick}>Throw Error</button>
+        <Section_one
+          searchTerm={searchTerm}
+          onInputChange={handleInputChange}
+          onSearch={handleSearch}
+        />
+        <Section_two pokemons={pokemons} error={throwError} />
+      </div>
+    </ErrorBoundary>
+  )
 }
-
-export default App

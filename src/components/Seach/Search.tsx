@@ -1,4 +1,4 @@
-import { Component, ReactNode } from 'react'
+import React, { useState, useEffect } from 'react'
 import './style.css'
 
 interface SearchProps {
@@ -7,46 +7,38 @@ interface SearchProps {
   onInputChange: (searchTerm: string) => void
 }
 
-class Search extends Component<SearchProps> {
-  state = {
-    searchTerm: '',
-  }
+export default function Search({ onSearch, onInputChange }: SearchProps) {
+  const [searchTerm, setSearchTerm] = useState('')
 
-  componentDidMount() {
+  useEffect(() => {
     const savedSearchTerm = localStorage.getItem('savedSearchTerm')
-
     if (savedSearchTerm) {
-      this.setState({ searchTerm: savedSearchTerm })
-      this.props.onInputChange(savedSearchTerm)
+      setSearchTerm(savedSearchTerm)
+      onInputChange(savedSearchTerm)
     }
+  }, [onInputChange])
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearchTerm = event.target.value
+    setSearchTerm(newSearchTerm)
+    onInputChange(newSearchTerm)
   }
 
-  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = event.target.value
-    this.setState({ searchTerm })
-    this.props.onInputChange(searchTerm)
-  }
-
-  handleSearch = () => {
-    const { searchTerm } = this.state
+  const handleSearch = () => {
     localStorage.setItem('savedSearchTerm', searchTerm)
-    this.props.onSearch(searchTerm)
+    onSearch(searchTerm)
   }
 
-  render(): ReactNode {
-    return (
-      <div className="search-component">
-        <p>Search</p>
-        <input
-          placeholder="Enter search ..."
-          type="text"
-          value={this.state.searchTerm}
-          onChange={this.handleInputChange}
-        />
-        <button onClick={this.handleSearch}>Search Button</button>
-      </div>
-    )
-  }
+  return (
+    <div className="search-component">
+      <p>Search</p>
+      <input
+        placeholder="Enter search ..."
+        type="text"
+        value={searchTerm}
+        onChange={handleInputChange}
+      />
+      <button onClick={handleSearch}>Search Button</button>
+    </div>
+  )
 }
-
-export default Search
