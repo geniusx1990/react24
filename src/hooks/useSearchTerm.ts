@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react'
 
 const useSearchTerm = (key: string) => {
-  const [searchTerm, setSearchTerm] = useState<string>('')
-
-  useEffect(() => {
+  const [searchTerm, setSearchTerm] = useState<string>(() => {
     const savedSearchTerm = localStorage.getItem(key)
-    if (savedSearchTerm) {
-      setSearchTerm(savedSearchTerm)
-    }
+    return savedSearchTerm || ''
+  })
+  console.log('HOOOOOk')
+  useEffect(() => {
+    console.log('component mounted')
 
     return () => {
       localStorage.setItem(key, searchTerm)
+      console.log('component UNMOUNTED')
     }
-  }, [key, searchTerm])
+  }, [searchTerm, key])
 
   return [searchTerm, setSearchTerm] as const
 }
-
 export default useSearchTerm

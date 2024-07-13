@@ -6,16 +6,16 @@ import { IPokemon } from './utils/interfaces'
 import { getPokemon, fetchAllPokemons } from './utils/API'
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
 import Fallback from './components/Fallback/Fallback'
+import useSearchTerm from './hooks/useSearchTerm'
 
 export default function App() {
-  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [searchTerm, setSearchTerm] = useSearchTerm('savedSearchTerm')
   const [pokemons, setPokemons] = useState<IPokemon[]>([])
   const [throwError, setThrowError] = useState<boolean>(false)
 
   useEffect(() => {
-    const savedSearchTerm = localStorage.getItem('savedSearchTerm')
-    if (savedSearchTerm) {
-      loadPokemon(savedSearchTerm)
+    if (searchTerm) {
+      loadPokemon(searchTerm)
     } else {
       loadAllPokemons()
     }
@@ -67,7 +67,6 @@ export default function App() {
       <div className="container">
         <button onClick={handleClick}>Throw Error</button>
         <Section_one
-          searchTerm={searchTerm}
           onInputChange={handleInputChange}
           onSearch={handleSearch}
         />

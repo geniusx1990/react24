@@ -1,22 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import './style.css'
+import useSearchTerm from '../../hooks/useSearchTerm'
 
 interface SearchProps {
-  searchTerm: string
   onSearch: (searchTerm: string) => void
   onInputChange: (searchTerm: string) => void
 }
 
 export default function Search({ onSearch, onInputChange }: SearchProps) {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useSearchTerm('savedSearchTerm')
 
   useEffect(() => {
-    const savedSearchTerm = localStorage.getItem('savedSearchTerm')
-    if (savedSearchTerm) {
-      setSearchTerm(savedSearchTerm)
-      onInputChange(savedSearchTerm)
-    }
-  }, [onInputChange])
+    onInputChange(searchTerm)
+  }, [])
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchTerm = event.target.value
@@ -25,7 +21,6 @@ export default function Search({ onSearch, onInputChange }: SearchProps) {
   }
 
   const handleSearch = () => {
-    localStorage.setItem('savedSearchTerm', searchTerm)
     onSearch(searchTerm)
   }
 
