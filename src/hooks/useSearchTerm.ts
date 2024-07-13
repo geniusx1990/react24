@@ -5,13 +5,11 @@ const useSearchTerm = (key: string) => {
     const savedSearchTerm = localStorage.getItem(key)
     return savedSearchTerm || ''
   })
-  console.log('HOOOOOk')
   useEffect(() => {
     console.log('component mounted')
 
     return () => {
       localStorage.setItem(key, searchTerm)
-      console.log('component UNMOUNTED')
     }
   }, [])
 
