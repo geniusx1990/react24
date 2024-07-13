@@ -12,7 +12,7 @@ export default function Search({ onSearch, onInputChange }: SearchProps) {
 
   useEffect(() => {
     onInputChange(searchTerm)
-  }, [])
+  }, [searchTerm, onInputChange])
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchTerm = event.target.value

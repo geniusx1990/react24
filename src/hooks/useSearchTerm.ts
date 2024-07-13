@@ -13,7 +13,7 @@ const useSearchTerm = (key: string) => {
       localStorage.setItem(key, searchTerm)
       console.log('component UNMOUNTED')
     }
-  }, [searchTerm, key])
+  }, [])
 
   return [searchTerm, setSearchTerm] as const
 }
