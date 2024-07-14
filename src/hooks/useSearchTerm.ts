@@ -6,8 +6,6 @@ const useSearchTerm = (key: string) => {
     return savedSearchTerm || ''
   })
   useEffect(() => {
-    console.log('component mounted')
-
     return () => {
       localStorage.setItem(key, searchTerm)
     }
