@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import './style.css'
 
 interface CardProps {
@@ -11,9 +11,13 @@ interface CardProps {
 export default function Card(props: CardProps) {
   const { id, image, name, type } = props
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleClick = () => {
-    navigate(`/details/${id}`)
+    const searchParams = new URLSearchParams(location.search)
+    const pageString = searchParams.get('page')
+    const page = pageString ? parseInt(pageString, 10) : 1
+    navigate(`/details/${id}?page=${page}`)
   }
 
   return (

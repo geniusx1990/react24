@@ -1,11 +1,14 @@
+import './stype.css'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { getPokemonDetails } from '../../utils/API'
 import { IPokemon } from '../../utils/interfaces'
 
-export default function Details() {
+const Details = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
+
   const [pokemon, setPokemon] = useState<IPokemon | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -25,7 +28,10 @@ export default function Details() {
   }, [id])
 
   const handleClose = () => {
-    navigate(-1)
+    const searchParams = new URLSearchParams(location.search)
+    const pageString = searchParams.get('page')
+    const currentPage = pageString ? parseInt(pageString, 10) : 1
+    navigate(`/?page=${currentPage}`)
   }
 
   if (loading) return <div>Loading...</div>
@@ -40,3 +46,5 @@ export default function Details() {
     </div>
   )
 }
+
+export default Details

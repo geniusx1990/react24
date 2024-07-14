@@ -8,7 +8,7 @@ import Fallback from '../../components/Fallback/Fallback'
 import Section_two from '../../components/Section_two/Section_two'
 import { fetchAllPokemons, getPokemon } from '../../utils/API'
 import Pagination from '../../components/Pagination/Pagination'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { ITEMS_PER_PAGE } from '../../utils/Constants'
 
 export default function MainPage() {
@@ -18,17 +18,23 @@ export default function MainPage() {
   const [throwError, setThrowError] = useState<boolean>(false)
   const [currentPage, setCurrentPage] = useState(1)
   const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search)
     const pageString = searchParams.get('page')
-    const page = pageString ? parseInt(pageString) : 1
-    setCurrentPage(page)
-
-    if (searchTerm) {
-      loadPokemon(searchTerm)
+    if (!pageString) {
+      searchParams.set('page', '1')
+      navigate(`/?${searchParams.toString()}`, { replace: true })
     } else {
-      loadAllPokemons(page)
+      const page = parseInt(pageString, 10)
+      setCurrentPage(page)
+
+      if (searchTerm) {
+        loadPokemon(searchTerm)
+      } else {
+        loadAllPokemons(page)
+      }
     }
   }, [location.search])
 
@@ -87,10 +93,27 @@ export default function MainPage() {
     setThrowError(true)
   }
 
+  const closeDetails = () => {
+    const searchParams = new URLSearchParams(location.search)
+    searchParams.delete('details')
+    navigate(`/?${searchParams.toString()}`)
+  }
+
+  const handleLeftSectionClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement
+    if (
+      !target.closest('.card') &&
+      !target.closest('.right-section') &&
+      !target.closest('.pagination-button')
+    ) {
+      closeDetails()
+    }
+  }
+
   return (
     <ErrorBoundary fallback={<Fallback />}>
       <div className="section">
-        <div className="container">
+        <div className="container" onClick={handleLeftSectionClick}>
           <button onClick={handleClick}>Throw Error</button>
           <Section_one
             onInputChange={handleInputChange}
@@ -99,7 +122,7 @@ export default function MainPage() {
           <Section_two pokemons={displayedPokemons} error={throwError} />
           <Pagination
             totalPages={Math.ceil(pokemons.length / ITEMS_PER_PAGE)}
-            currentPage={currentPage} /* onPageChange={handlePageChange} */
+            currentPage={currentPage}
           />
         </div>
         <div className="right-section">

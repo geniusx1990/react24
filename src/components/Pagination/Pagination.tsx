@@ -12,14 +12,15 @@ export default function Pagination({ totalPages, currentPage }: IPagination) {
 
   const handlePageChange = (page: number) => {
     const searchParams = new URLSearchParams(location.search)
-    searchParams.set('page', page.toString())
-    navigate({ search: searchParams.toString() })
+    searchParams.set('page', String(page))
+    navigate(`/?${searchParams.toString()}`)
   }
 
   return (
     <div className="pagination">
       {Array.from({ length: totalPages }).map((_, index) => (
         <button
+          className="pagination-button"
           key={index}
           onClick={() => handlePageChange(index + 1)}
           disabled={currentPage === index + 1}
