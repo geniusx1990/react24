@@ -8,7 +8,7 @@ interface CardListProps {
 
 export default function CardList(props: CardListProps) {
   const { pokemons } = props
-
+  console.log(pokemons, 'pokemons')
   if (pokemons.length === 0) {
     return <div>Loading...</div>
   }

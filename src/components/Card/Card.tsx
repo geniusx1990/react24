@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import './style.css'
 
 interface CardProps {
@@ -9,9 +10,14 @@ interface CardProps {
 
 export default function Card(props: CardProps) {
   const { id, image, name, type } = props
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    navigate(`/details/${id}`)
+  }
 
   return (
-    <div className="card">
+    <div className="card" onClick={handleClick}>
       <div className="card-image">
         <img src={image} alt={name} />
       </div>
